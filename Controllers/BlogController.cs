@@ -19,12 +19,28 @@ namespace ExploreCalifornia1.Controllers
         }
 
         [Route("")]
-        public IActionResult Index()
+        public IActionResult Index(int page = 0)
         {
-            var posts = Db.Posts
-                .OrderByDescending(x => x.Posted)
-                .Take(2)
-                .ToList();
+            var pageSize = 2;
+            var totalPosts = Db.Posts.Count();
+            var totalPages = totalPosts / pageSize;
+            var previousPage = page - 1;
+            var nextPage = page + 1;
+
+            ViewBag.PreviousPage = previousPage;
+            ViewBag.HasPreviousPage = previousPage >= 0;
+            ViewBag.NextPage = nextPage;
+            ViewBag.HasNextPage = nextPage < totalPages;
+
+            var posts =
+                Db.Posts
+                    .OrderByDescending(x => x.Posted)
+                    .Skip(pageSize * page)
+                    .Take(pageSize)
+                    .ToList();
+
+            if (Request.Headers["X-Requested-With"] == "XMLHttpRequest")
+                return PartialView(posts);
 
             return View(posts);
         }
