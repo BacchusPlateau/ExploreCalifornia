@@ -1,0 +1,27 @@
+﻿@model Post
+
+<h1>Create Blog Post</h1>
+
+<fieldset>
+
+    @using (@Html.BeginForm())
+    {
+        @Html.ValidationSummary()
+    <p>
+        @Html.LabelFor(m => m.Title)
+        @Html.EditorFor(m => m.Title)
+        @Html.ValidationMessageFor(m => m.Title)
+    </p>
+
+    <p>
+        @Html.LabelFor(m => m.Body)
+        @Html.TextAreaFor(m => m.Body)
+        @Html.ValidationMessageFor(m => m.Body)
+    </p>
+
+    <p>
+        <button type="submit">Create Post</button>
+    </p>
+    }
+
+</fieldset>
