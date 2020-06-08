@@ -7,6 +7,7 @@ using ExploreCalifornia1.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Data.SqlClient.Server;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -26,13 +27,28 @@ namespace ExploreCalifornia1
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddIdentity<IdentityUser, IdentityRole>(cfg =>
+            {
+                cfg.User.RequireUniqueEmail = true;
+            })
+                .AddEntityFrameworkStores<IdentityDataContext>();
+            
+            services.AddAuthentication()
+                .AddCookie();
+
             services
                .AddControllersWithViews()
                .SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Version_3_0);
             services.AddRazorPages().AddRazorRuntimeCompilation();
+
             services.AddDbContext<BlogDataContext>(options =>
                 options.UseSqlServer(Config.GetConnectionString("BlogConnect"))
             );
+
+            services.AddDbContext<IdentityDataContext>(options =>
+                options.UseSqlServer(Config.GetConnectionString("BlogConnect"))
+            );
+
             services.AddSingleton<FormattingService>();
             
         }
@@ -50,8 +66,9 @@ namespace ExploreCalifornia1
 
             app.UseNodeModules();
             app.UseStaticFiles();
+            app.UseAuthorization();
             app.UseRouting();
-
+            app.UseAuthorization();
             app.UseEndpoints(cfg =>
             {
                 cfg.MapDefaultControllerRoute();

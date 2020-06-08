@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ExploreCalifornia1.Data;
 using ExploreCalifornia1.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExploreCalifornia1.Controllers
@@ -55,6 +56,7 @@ namespace ExploreCalifornia1.Controllers
             return View(post);
         }
 
+        [Authorize]
         [Route("create")]
         [HttpGet]
         public IActionResult Create()
@@ -62,6 +64,7 @@ namespace ExploreCalifornia1.Controllers
             return View();
         }
 
+        [Authorize]
         [Route("create")]
         [HttpPost]
         public IActionResult Create(Post post)
